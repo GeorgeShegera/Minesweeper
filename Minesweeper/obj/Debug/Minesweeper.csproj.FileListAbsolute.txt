@@ -1,0 +1,11 @@
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe.config
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.exe
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\bin\Debug\Minesweeper.pdb
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.AssemblyReference.cache
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.SuggestedBindingRedirects.cache
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.MineSweeperWnd.resources
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.Properties.Resources.resources
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.GenerateResource.cache
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.CoreCompileInputs.cache
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.exe
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
