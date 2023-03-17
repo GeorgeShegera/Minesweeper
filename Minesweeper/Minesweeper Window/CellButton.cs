@@ -9,10 +9,9 @@ namespace Minesweeper
 {
     internal class CellButton : Button
     {
-        public CellButton() : base() 
+        public CellButton() : base()
         {
             SetStyle(ControlStyles.Selectable, false);
-        }
-
+        }        
     }
 }
