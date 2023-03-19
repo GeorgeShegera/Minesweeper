@@ -36,12 +36,14 @@
             this.CellsPanel = new System.Windows.Forms.Panel();
             this.OutterPanel = new System.Windows.Forms.Panel();
             this.UpperPanel = new System.Windows.Forms.Panel();
+            this.BtnSmile = new System.Windows.Forms.PictureBox();
+            this.PanelTimer = new System.Windows.Forms.Panel();
             this.MinesCounterPanel = new System.Windows.Forms.Panel();
             this.Timer = new System.Windows.Forms.Timer(this.components);
-            this.PanelTimer = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
             this.OutterPanel.SuspendLayout();
             this.UpperPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BtnSmile)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -71,10 +73,10 @@
             // 
             this.CellsPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CellsPanel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.CellsPanel.Location = new System.Drawing.Point(59, 119);
+            this.CellsPanel.Location = new System.Drawing.Point(59, 114);
             this.CellsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.CellsPanel.Name = "CellsPanel";
-            this.CellsPanel.Size = new System.Drawing.Size(296, 198);
+            this.CellsPanel.Size = new System.Drawing.Size(296, 203);
             this.CellsPanel.TabIndex = 0;
             this.CellsPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.InnerPanel_Paint);
             // 
@@ -90,6 +92,7 @@
             // 
             // UpperPanel
             // 
+            this.UpperPanel.Controls.Add(this.BtnSmile);
             this.UpperPanel.Controls.Add(this.PanelTimer);
             this.UpperPanel.Controls.Add(this.MinesCounterPanel);
             this.UpperPanel.Location = new System.Drawing.Point(59, 29);
@@ -97,6 +100,26 @@
             this.UpperPanel.Size = new System.Drawing.Size(296, 58);
             this.UpperPanel.TabIndex = 1;
             this.UpperPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.InnerPanel_Paint);
+            // 
+            // BtnSmile
+            // 
+            this.BtnSmile.Location = new System.Drawing.Point(118, 17);
+            this.BtnSmile.Name = "BtnSmile";
+            this.BtnSmile.Size = new System.Drawing.Size(30, 29);
+            this.BtnSmile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.BtnSmile.TabIndex = 3;
+            this.BtnSmile.TabStop = false;
+            this.BtnSmile.Paint += new System.Windows.Forms.PaintEventHandler(this.BtnSmile_Paint);
+            this.BtnSmile.MouseDown += new System.Windows.Forms.MouseEventHandler(this.BtnSmile_MouseDown);
+            this.BtnSmile.MouseUp += new System.Windows.Forms.MouseEventHandler(this.BtnSmile_MouseUp);
+            // 
+            // PanelTimer
+            // 
+            this.PanelTimer.Location = new System.Drawing.Point(186, 17);
+            this.PanelTimer.Name = "PanelTimer";
+            this.PanelTimer.Size = new System.Drawing.Size(72, 29);
+            this.PanelTimer.TabIndex = 2;
+            this.PanelTimer.Paint += new System.Windows.Forms.PaintEventHandler(this.UpperInnerPanel_Paint);
             // 
             // MinesCounterPanel
             // 
@@ -106,13 +129,10 @@
             this.MinesCounterPanel.TabIndex = 2;
             this.MinesCounterPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.UpperInnerPanel_Paint);
             // 
-            // PanelTimer
+            // Timer
             // 
-            this.PanelTimer.Location = new System.Drawing.Point(186, 17);
-            this.PanelTimer.Name = "PanelTimer";
-            this.PanelTimer.Size = new System.Drawing.Size(72, 29);
-            this.PanelTimer.TabIndex = 2;
-            this.PanelTimer.Paint += new System.Windows.Forms.PaintEventHandler(this.UpperInnerPanel_Paint);
+            this.Timer.Interval = 1;
+            this.Timer.Tick += new System.EventHandler(this.Timer_Tick);
             // 
             // MineSweeperWnd
             // 
@@ -125,6 +145,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
+            this.MaximizeBox = false;
             this.Name = "MineSweeperWnd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Minesweeper";
@@ -133,6 +154,7 @@
             this.menuStrip.PerformLayout();
             this.OutterPanel.ResumeLayout(false);
             this.UpperPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.BtnSmile)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -148,6 +170,7 @@
         private System.Windows.Forms.Timer Timer;
         private System.Windows.Forms.Panel MinesCounterPanel;
         private System.Windows.Forms.Panel PanelTimer;
+        private System.Windows.Forms.PictureBox BtnSmile;
     }
 }
 

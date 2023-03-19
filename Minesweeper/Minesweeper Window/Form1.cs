@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,11 +34,21 @@ namespace Minesweeper
         private int GetCellsPanelWidth { get => game.Width * CellSize + CellsPanelBorWidth * 2; }
         private int GetCellsPanelHeight { get => game.Height * CellSize + CellsPanelBorWidth * 2; }
         private int UpperPanelIndent { get => (UpperPanelHeight - CounterPanelHeight) / 2; }
+        private bool smileBtnDown;
+        private bool SmileBtnDown
+        {
+            get => smileBtnDown;
+            set
+            {
+                if (value) BtnSmile.Padding = new Padding(4, 4, 0, 0);
+                else BtnSmile.Padding = new Padding(0, 0, 0, 0);
+                smileBtnDown = value;
+            }
+        }
         private PrivateFontCollection MyFonts { get; }
 
         public MineSweeperWnd()
         {
-
             InitializeComponent();
             menuStrip.BackColor = Color.FromArgb(235, 233, 217);
             // Outter Panel
@@ -50,18 +64,20 @@ namespace Minesweeper
             UpperPanel.Width = GetCellsPanelWidth;
             UpperPanel.Height = UpperPanelHeight;
             UpperPanel.Location = new Point(OutterPanelIndent, OutterPanelIndent);
-            // Timer Panel                        
+            // Timer Panel
             PanelTimer.Size = new Size(CounterPanelWidth, CounterPanelHeight);
             PanelTimer.Location = new Point(GetCellsPanelWidth - PanelTimer.Width - UpperPanelIndent, UpperPanelIndent);
             // Mines Panel
             MinesCounterPanel.Size = new Size(CounterPanelWidth, CounterPanelHeight);
             MinesCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);
-            //
-            const int numCount = 3;
-            int width = (CounterPanelWidth - UpperPanelBorder * 2) / numCount;
-
+            // Adding Upper Panels
             PanelTimer.Controls.AddRange(GetCounters().ToArray());
             MinesCounterPanel.Controls.AddRange(GetCounters().ToArray());
+            // Smile button            
+            BtnSmile.Size = new Size(CounterPanelHeight, CounterPanelHeight);
+            BtnSmile.BackColor = Color.FromArgb(123, 123, 123);
+            BtnSmile.Location = new Point((GetCellsPanelWidth - CounterPanelHeight) / 2, UpperPanelIndent);
+            BtnSmile.Image = Properties.Resources.SimpleSmile;
             // Fonts
             MyFonts = new PrivateFontCollection();
             using (MemoryStream fontStream = new MemoryStream(Properties.Resources.mine_sweeper))
@@ -72,10 +88,13 @@ namespace Minesweeper
                 Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
                 MyFonts.AddMemoryFont(data, (int)fontStream.Length);
                 Marshal.FreeCoTaskMem(data);
-            }
+            }            
+            Timer.Start();
 
             List<CounterPictureBox> GetCounters()
             {
+                const int numCount = 3;
+                int width = (CounterPanelWidth - UpperPanelBorder * 2) / numCount;
                 List<CounterPictureBox> result = new List<CounterPictureBox>();
                 for (int i = 0; i < numCount; i++)
                 {
@@ -94,16 +113,35 @@ namespace Minesweeper
 
         private void CellButton_Paint(object sender, PaintEventArgs e)
         {
-            ControlPaint.DrawBorder(e.Graphics, (sender as Button).ClientRectangle,
-            Color.FromArgb(255, 255, 255), CellBorderWidth, ButtonBorderStyle.Solid,
-            Color.FromArgb(255, 255, 255), CellBorderWidth, ButtonBorderStyle.Solid,
-            Color.FromArgb(123, 123, 123), CellBorderWidth, ButtonBorderStyle.Solid,
-            Color.FromArgb(123, 123, 123), CellBorderWidth, ButtonBorderStyle.Solid);
+            if (!(sender is Cell cellBtn)) return;
+            if (cellBtn.IsDown)
+            {
+                ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid);
+            }
+            else if (cellBtn.State == CellState.Open)
+            {
+                ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid);
+            }
+            else if (cellBtn.State == CellState.Hide)
+            {
+                ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
+                Color.FromArgb(255, 255, 255), CellBorderWidth, ButtonBorderStyle.Solid,
+                Color.FromArgb(255, 255, 255), CellBorderWidth, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), CellBorderWidth, ButtonBorderStyle.Solid,
+                Color.FromArgb(123, 123, 123), CellBorderWidth, ButtonBorderStyle.Solid);
+            }
         }
 
         private void MineSweeperWnd_Load(object sender, EventArgs e)
         {
-
             BackColor = Color.FromArgb(189, 189, 189);
             FormBorderStyle = FormBorderStyle.FixedSingle;
 
@@ -111,24 +149,127 @@ namespace Minesweeper
             {
                 for (int j = 0; j < game.Width; j++)
                 {
-                    CellButton helloButton = new CellButton
+                    Cell cell = new Cell
                     {
                         Size = new Size(CellSize, CellSize),
                         BackColor = Color.FromArgb(189, 189, 189),
                         Location = new Point(CellSize * j + CellsPanelBorWidth, CellSize * i + CellsPanelBorWidth),
-                        Font = new Font(MyFonts.Families.FirstOrDefault(), Font.Size),
+                        Font = new Font(MyFonts.Families.FirstOrDefault(), 13),
                         UseCompatibleTextRendering = true,
                         TextAlign = ContentAlignment.MiddleCenter,
-                        FlatStyle = FlatStyle.Flat
+                        FlatStyle = FlatStyle.Flat,
                     };
-                    helloButton.FlatAppearance.BorderSize = 0;
-                    helloButton.FlatAppearance.MouseOverBackColor = SystemColors.ControlLight;
-                    helloButton.Paint += new PaintEventHandler(CellButton_Paint);
-                    CellsPanel.Controls.Add(helloButton);
+                    cell.TextAlign = ContentAlignment.MiddleCenter;
+                    cell.FlatAppearance.BorderSize = 0;
+                    cell.FlatAppearance.MouseOverBackColor = Color.Transparent;
+                    cell.FlatAppearance.MouseDownBackColor = Color.Transparent;
+                    cell.Paint += new PaintEventHandler(CellButton_Paint);
+                    cell.MouseUp += new MouseEventHandler(BtnCell_MouseUp);
+                    CellsPanel.Controls.Add(cell);
                 }
             }
         }
 
+        private void BtnSmile_Paint(object sender, PaintEventArgs e)
+        {
+            if (SmileBtnDown)
+            {
+                BtnSmile.Padding = new Padding(4, 4, 0, 0);
+                ControlPaint.DrawBorder(e.Graphics, (sender as PictureBox).ClientRectangle,
+                   Color.FromArgb(123, 123, 123), 4, ButtonBorderStyle.Solid,
+                   Color.FromArgb(123, 123, 123), 4, ButtonBorderStyle.Solid,
+                   Color.FromArgb(123, 123, 123), 2, ButtonBorderStyle.Solid,
+                   Color.FromArgb(123, 123, 123), 2, ButtonBorderStyle.Solid);
+            }
+            else
+            {
+                BtnSmile.Padding = new Padding(0, 0, 0, 0);
+                ControlPaint.DrawBorder(e.Graphics, (sender as PictureBox).ClientRectangle,
+                   Color.FromArgb(255, 255, 255), 4, ButtonBorderStyle.Solid,
+                   Color.FromArgb(255, 255, 255), 4, ButtonBorderStyle.Solid,
+                   Color.FromArgb(123, 123, 123), 4, ButtonBorderStyle.Solid,
+                   Color.FromArgb(123, 123, 123), 4, ButtonBorderStyle.Solid);
+            }
+        }
+
+        private void BtnCell_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (!(FindControlAtCursor(this) is Cell cellButton)) return;
+            else if (e.Button == MouseButtons.Left)
+            {
+                if (cellButton.IsDown)
+                {
+                    BtnSmile.Image = Properties.Resources.SimpleSmile;
+                    cellButton.IsDown = false;
+                    cellButton.State = CellState.Open;
+                    cellButton.Invalidate();
+                }
+            }
+        }
+
+        private void BtnSmile_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            (sender as PictureBox).Invalidate();
+            SmileBtnDown = true;
+        }
+
+        private void BtnSmile_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left) return;
+            (sender as PictureBox).Invalidate();
+            SmileBtnDown = false;
+        }
+
+        public static Control FindControlAtCursor(Form form)
+        {
+            Point pos = Cursor.Position;
+            if (form.Bounds.Contains(pos))
+                return FindControlAtPoint(form, form.PointToClient(pos));
+            return null;
+        }
+        public static Control FindControlAtPoint(Control container, Point pos)
+        {
+            Control child;
+            foreach (Control c in container.Controls)
+            {
+                if (c.Visible && c.Bounds.Contains(pos))
+                {
+                    child = FindControlAtPoint(c, new Point(pos.X - c.Left, pos.Y - c.Top));
+                    if (child == null) return c;
+                    else return child;
+                }
+            }
+            return null;
+        }
+
+        private Cell prevCellButton = null;
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            Rectangle r = CellsPanel.RectangleToScreen(CellsPanel.ClientRectangle);
+            if (r.Contains(MousePosition))
+            {
+                if (prevCellButton != null) RemovePreviousStyle();
+                if ((MouseButtons & MouseButtons.Left) != 0)
+                {
+                    Control control = FindControlAtCursor(this);
+                    if (!(control is Cell btnCell)) return;
+                    BtnSmile.Image = Properties.Resources.PressingSmile;
+                    btnCell.IsDown = true;
+                    prevCellButton = btnCell;
+                    btnCell.Invalidate();
+                }
+            }
+            else if (prevCellButton != null) RemovePreviousStyle();
+
+            void RemovePreviousStyle()
+            {
+                BtnSmile.Image = Properties.Resources.SimpleSmile;
+                prevCellButton.IsDown = false;
+                prevCellButton.Invalidate();
+                prevCellButton = null;
+            }
+        }
         private void InnerPanel_Paint(object sender, PaintEventArgs e)
         {
             ControlPaint.DrawBorder(e.Graphics, (sender as Panel).ClientRectangle,

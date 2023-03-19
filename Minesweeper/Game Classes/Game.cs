@@ -12,6 +12,7 @@ namespace Minesweeper
         public int Height { get; }
         public int Width { get; }
         public int Mines { get; }
+        List<Cell> Cells { get; set; }
         public Game(GameLevel level)
         {
             switch (level)

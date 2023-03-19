@@ -61,10 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\CellState.cs" />
+    <Compile Include="Game Classes\Field.cs" />
     <Compile Include="Minesweeper Window\CounterPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Minesweeper Window\CellButton.cs">
+    <Compile Include="Minesweeper Window\Cell.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Minesweeper Window\Form1.cs">
@@ -73,10 +75,11 @@
     <Compile Include="Minesweeper Window\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Game.cs" />
-    <Compile Include="GameLevel.cs" />
+    <Compile Include="Game Classes\Game.cs" />
+    <Compile Include="Enums\GameLevel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Enums\СellСontent.cs" />
     <EmbeddedResource Include="Minesweeper Window\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -148,6 +151,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\9.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Smile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Untitled %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Untitled.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SmileLose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SimpleSmile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PressingSmile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
