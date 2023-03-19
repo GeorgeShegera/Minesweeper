@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Minesweeper
 {
@@ -12,7 +13,7 @@ namespace Minesweeper
         public int Height { get; }
         public int Width { get; }
         public int Mines { get; }
-        List<Cell> Cells { get; set; }
+        public Field Field { get; set; } = new Field();
         public Game(GameLevel level)
         {
             switch (level)
@@ -40,5 +41,7 @@ namespace Minesweeper
                     break;
             }
         }
+        public void AddCell(Cell cell) => Field.AddCell(cell, Width);
+        public void RefreshField() => Field.Fill(Mines, Height, Width);
     }
 }

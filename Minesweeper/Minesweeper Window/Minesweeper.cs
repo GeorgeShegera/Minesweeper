@@ -21,7 +21,7 @@ namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
     {
-        private readonly Game game = new Game(GameLevel.Beginner);
+        private readonly Game game = new Game(GameLevel.Expert);
         private int CellsPanelBorWidth { get; } = 5;
         private int OutterPanelBorWidth { get; } = 5;
         private int CellBorderWidth { get; } = 4;
@@ -165,9 +165,11 @@ namespace Minesweeper
                     cell.FlatAppearance.MouseDownBackColor = Color.Transparent;
                     cell.Paint += new PaintEventHandler(CellButton_Paint);
                     cell.MouseUp += new MouseEventHandler(BtnCell_MouseUp);
+                    game.AddCell(cell);
                     CellsPanel.Controls.Add(cell);
                 }
             }
+            game.RefreshField();
         }
 
         private void BtnSmile_Paint(object sender, PaintEventArgs e)
@@ -198,11 +200,10 @@ namespace Minesweeper
             else if (e.Button == MouseButtons.Left)
             {
                 if (cellButton.IsDown)
-                {
+                {                    
                     BtnSmile.Image = Properties.Resources.SimpleSmile;
                     cellButton.IsDown = false;
-                    cellButton.State = CellState.Open;
-                    cellButton.Invalidate();
+                    cellButton.State = CellState.Open;                    
                 }
             }
         }

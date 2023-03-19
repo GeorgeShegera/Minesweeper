@@ -18,27 +18,59 @@ namespace Minesweeper
             get => state;
             set
             {
-                if (value == CellState.Open) Text = Value.ToString();
+                if (value == CellState.Open)
+                {
+                    if (Type == TypeOfCell.Number) Text = Number.ToString();
+                    else if (Type == TypeOfCell.Mine) Image = Properties.Resources.SimpleSmile;
+                }
+                Invalidate();
                 state = value;
             }
         }
-        public СellСontent Content { get; set; } = СellСontent.Number;
-        public int Value { get; set; } = 1;
-        public Cell() : base()
+        public TypeOfCell Type { get; set; }
+
+        private int number;
+        public int Number
         {
-            state = CellState.Hide;
-            if (Content == СellСontent.Number)
+            get => number;
+            set
             {
-                switch (Value)
+                switch (value)
                 {
                     case 1:
-                        ForeColor = Field.oneColor;
+                        ForeColor = Field.colorOne;
                         break;
                     case 2:
-                        ForeColor = Field.oneColor;
+                        ForeColor = Field.colorTwo;
+                        break;
+                    case 3:
+                        ForeColor = Field.colorThree;
+                        break;
+                    case 4:
+                        ForeColor = Field.colorFour;
+                        break;
+                    case 5:
+                        ForeColor = Field.colorFive;
+                        break;
+                    case 6:
+                        ForeColor = Field.colorSix;
+                        break;
+                    case 7:
+                        ForeColor = Field.colorSeven;
+                        break;
+                    case 8:
+                        ForeColor = Field.colorEight;
                         break;
                 }
+                number = value;
             }
+        }
+
+        public Cell(int value = 0, TypeOfCell type = TypeOfCell.Empty) : base()
+        {
+            Number = value;
+            Type = type;
+            state = CellState.Hide;
             SetStyle(ControlStyles.Selectable, false);
         }
     }

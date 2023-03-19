@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Minesweeper
 {
-    public enum СellСontent
+    public enum TypeOfCell
     {
         Empty,
         Number,

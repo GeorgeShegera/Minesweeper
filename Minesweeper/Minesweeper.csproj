@@ -69,19 +69,19 @@
     <Compile Include="Minesweeper Window\Cell.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Minesweeper Window\Form1.cs">
+    <Compile Include="Minesweeper Window\Minesweeper.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Minesweeper Window\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Minesweeper Window\Minesweeper.Designer.cs">
+      <DependentUpon>Minesweeper.cs</DependentUpon>
     </Compile>
     <Compile Include="Game Classes\Game.cs" />
     <Compile Include="Enums\GameLevel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Enums\СellСontent.cs" />
-    <EmbeddedResource Include="Minesweeper Window\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Enums\TypeOfCell.cs" />
+    <EmbeddedResource Include="Minesweeper Window\Minesweeper.resx">
+      <DependentUpon>Minesweeper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
