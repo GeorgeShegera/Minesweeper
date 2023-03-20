@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Minesweeper
 {
-    public enum CellState
+    public enum CellVisible
     {
         Hide,
         Flag,

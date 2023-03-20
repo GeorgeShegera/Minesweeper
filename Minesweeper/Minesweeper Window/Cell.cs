@@ -12,19 +12,20 @@ namespace Minesweeper
     internal class Cell : Button
     {
         public bool IsDown { get; set; } = false;
-        private CellState state;
-        public CellState State
+        public CellPoint Point { get; set; }
+        private CellVisible visibleState;
+        public CellVisible VisibleState
         {
-            get => state;
+            get => visibleState;
             set
             {
-                if (value == CellState.Open)
+                if (value == CellVisible.Open)
                 {
                     if (Type == TypeOfCell.Number) Text = Number.ToString();
                     else if (Type == TypeOfCell.Mine) Image = Properties.Resources.SimpleSmile;
                 }
                 Invalidate();
-                state = value;
+                visibleState = value;
             }
         }
         public TypeOfCell Type { get; set; }
@@ -66,11 +67,15 @@ namespace Minesweeper
             }
         }
 
-        public Cell(int value = 0, TypeOfCell type = TypeOfCell.Empty) : base()
+        public object CellState { get; internal set; }
+
+        public Cell(int value = 0, TypeOfCell type = TypeOfCell.Empty, CellPoint cellPoint = default)
+            : base()
         {
+            Point = cellPoint;
             Number = value;
             Type = type;
-            state = CellState.Hide;
+            visibleState = CellVisible.Hide;
             SetStyle(ControlStyles.Selectable, false);
         }
     }

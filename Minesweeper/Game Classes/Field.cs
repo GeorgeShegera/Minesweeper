@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace Minesweeper
 {
@@ -43,34 +46,59 @@ namespace Minesweeper
                     coordX = rnd.Next(0, width);
                     coordY = rnd.Next(0, height);
                 } while (Cells[coordY][coordX].Type == TypeOfCell.Mine);
-                Cells[coordY][coordX].Type = TypeOfCell.Mine; 
+                Cells[coordY][coordX].Type = TypeOfCell.Mine;
             }
-            for (int i = 0; i < Cells.Count; i++)
+            foreach (List<Cell> cells in Cells)
             {
-                for (int j = 0; j < Cells[i].Count; j++)
+                foreach (Cell cell in cells)
                 {
-                    if (Cells[i][j].Type == TypeOfCell.Empty)
+                    if (cell.Type == TypeOfCell.Empty)
                     {
-                        int number = DetermineNumber(i, j);
-                        Cells[i][j].Number = number;
-                        Cells[i][j].Type = number > 0 ? TypeOfCell.Number : TypeOfCell.Empty;
+                        int number = CountNeighboringMines(cell.Point);
+                        cell.Number = number;
+                        cell.Type = number > 0 ? TypeOfCell.Number : TypeOfCell.Empty;
                     }
                 }
             }
         }
 
-        public int DetermineNumber(int coordX, int coordY)
+        public int CountNeighboringMines(CellPoint point)
         {
             int count = 0;
-            for (int i = coordX - 1; i < coordX + 2; i++)
+            List<Cell> neighbouringCells = NeighbouringCells(point);
+            foreach (Cell neighboringCell in neighbouringCells)
+                if (neighboringCell.Type == TypeOfCell.Mine) count++;
+            return count;
+        }
+
+        public void OpenCell(Cell cell)
+        {
+            if (cell.VisibleState != CellVisible.Hide) return;
+            cell.VisibleState = CellVisible.Open;
+            List<Cell> neighboringCells = NeighbouringCells(cell.Point);
+            if (!neighboringCells.Any(x => x.Type == TypeOfCell.Mine))
             {
-                for (int j = coordY - 1; j < coordY + 2; j++)
-                {                    
-                    if (i >= 0 && j >= 0 && i < Cells.Count && j < Cells.First().Count && 
-                        Cells[i][j].Type == TypeOfCell.Mine) count++;
+                foreach (Cell neighboringCell in neighboringCells)
+                    OpenCell(neighboringCell);
+            }
+        }
+
+        private bool ValidateCoords(int coordX, int coordY)
+            => coordY >= 0 && coordX >= 0 && coordY < Cells.Count && coordX < Cells.First().Count;
+
+        private List<Cell> NeighbouringCells(CellPoint point)
+        {
+            List<Cell> neighbouringCells = new List<Cell>();
+            for (int i = -1; i <= 1; i++)
+            {
+                for (int j = -1; j <= 1; j++)
+                {
+                    int curCoordX = point.X + j, curCoordY = point.Y + i;
+                    if (i == 0 && j == 0 || !ValidateCoords(curCoordX, curCoordY)) continue;
+                    neighbouringCells.Add(Cells[curCoordY][curCoordX]);
                 }
             }
-            return count;
+            return neighbouringCells;
         }
     }
 }

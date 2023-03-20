@@ -43,5 +43,14 @@ namespace Minesweeper
         }
         public void AddCell(Cell cell) => Field.AddCell(cell, Width);
         public void RefreshField() => Field.Fill(Mines, Height, Width);
+        public void OpenCell(Cell cell)
+        {
+            if(cell.Type == TypeOfCell.Mine)
+            {
+                MessageBox.Show("Here is a mine!!");
+                return;
+            }
+            Field.OpenCell(cell);
+        }
     }
 }

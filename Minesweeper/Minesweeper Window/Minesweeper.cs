@@ -21,7 +21,7 @@ namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
     {
-        private readonly Game game = new Game(GameLevel.Expert);
+        private Game game = new Game(GameLevel.Beginner);
         private int CellsPanelBorWidth { get; } = 5;
         private int OutterPanelBorWidth { get; } = 5;
         private int CellBorderWidth { get; } = 4;
@@ -88,7 +88,7 @@ namespace Minesweeper
                 Marshal.Copy(fontdata, 0, data, (int)fontStream.Length);
                 MyFonts.AddMemoryFont(data, (int)fontStream.Length);
                 Marshal.FreeCoTaskMem(data);
-            }            
+            }
             Timer.Start();
 
             List<CounterPictureBox> GetCounters()
@@ -122,7 +122,7 @@ namespace Minesweeper
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid);
             }
-            else if (cellBtn.State == CellState.Open)
+            else if (cellBtn.VisibleState == CellVisible.Open)
             {
                 ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
@@ -130,7 +130,7 @@ namespace Minesweeper
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid);
             }
-            else if (cellBtn.State == CellState.Hide)
+            else if (cellBtn.VisibleState == CellVisible.Hide)
             {
                 ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
                 Color.FromArgb(255, 255, 255), CellBorderWidth, ButtonBorderStyle.Solid,
@@ -142,6 +142,7 @@ namespace Minesweeper
 
         private void MineSweeperWnd_Load(object sender, EventArgs e)
         {
+            game = new Game(GameLevel.Beginner);
             BackColor = Color.FromArgb(189, 189, 189);
             FormBorderStyle = FormBorderStyle.FixedSingle;
 
@@ -158,6 +159,7 @@ namespace Minesweeper
                         UseCompatibleTextRendering = true,
                         TextAlign = ContentAlignment.MiddleCenter,
                         FlatStyle = FlatStyle.Flat,
+                        Point = new CellPoint(j, i)
                     };
                     cell.TextAlign = ContentAlignment.MiddleCenter;
                     cell.FlatAppearance.BorderSize = 0;
@@ -199,11 +201,11 @@ namespace Minesweeper
             if (!(FindControlAtCursor(this) is Cell cellButton)) return;
             else if (e.Button == MouseButtons.Left)
             {
-                if (cellButton.IsDown)
-                {                    
-                    BtnSmile.Image = Properties.Resources.SimpleSmile;
-                    cellButton.IsDown = false;
-                    cellButton.State = CellState.Open;                    
+                if (cellButton.IsDown && cellButton.VisibleState != CellVisible.Open)
+                {
+                    BtnSmile.Image = Properties.Resources.SimpleSmile;                    
+                    game.OpenCell(cellButton);
+                    cellButton.IsDown = false;                    
                 }
             }
         }

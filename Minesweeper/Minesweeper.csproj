@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CelllPoint.cs" />
     <Compile Include="Enums\CellState.cs" />
     <Compile Include="Game Classes\Field.cs" />
     <Compile Include="Minesweeper Window\CounterPictureBox.cs">
