@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,24 @@ namespace Minesweeper
             {
                 if (value == CellVisible.Open)
                 {
-                    if (Type == TypeOfCell.Number) Text = Number.ToString();
-                    else if (Type == TypeOfCell.Mine) Image = Properties.Resources.SimpleSmile;
+                    switch (Type)
+                    {
+                        case TypeOfCell.Number:
+                            Text = Number.ToString();
+                            break;
+                        case TypeOfCell.Mine:
+                            BackgroundImage = Properties.Resources.SimpleSmile;
+                            break;
+                    }
+                }
+                else if(value == CellVisible.Flag)
+                {
+                    
+                    BackgroundImage = Properties.Resources.Flag;
+                }
+                else if(value == CellVisible.Hide)
+                {
+                    BackgroundImage = null;
                 }
                 Invalidate();
                 visibleState = value;

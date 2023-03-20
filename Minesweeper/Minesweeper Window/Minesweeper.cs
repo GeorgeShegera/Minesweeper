@@ -114,7 +114,7 @@ namespace Minesweeper
         private void CellButton_Paint(object sender, PaintEventArgs e)
         {
             if (!(sender is Cell cellBtn)) return;
-            if (cellBtn.IsDown)
+            if (cellBtn.IsDown && cellBtn.VisibleState != CellVisible.Flag)
             {
                 ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
@@ -130,7 +130,8 @@ namespace Minesweeper
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid,
                 Color.FromArgb(123, 123, 123), 1, ButtonBorderStyle.Solid);
             }
-            else if (cellBtn.VisibleState == CellVisible.Hide)
+            else if (cellBtn.VisibleState == CellVisible.Hide ||
+                     cellBtn.VisibleState == CellVisible.Flag)
             {
                 ControlPaint.DrawBorder(e.Graphics, (sender as Cell).ClientRectangle,
                 Color.FromArgb(255, 255, 255), CellBorderWidth, ButtonBorderStyle.Solid,
@@ -159,7 +160,8 @@ namespace Minesweeper
                         UseCompatibleTextRendering = true,
                         TextAlign = ContentAlignment.MiddleCenter,
                         FlatStyle = FlatStyle.Flat,
-                        Point = new CellPoint(j, i)
+                        Point = new CellPoint(j, i),
+                        BackgroundImageLayout = ImageLayout.Stretch,
                     };
                     cell.TextAlign = ContentAlignment.MiddleCenter;
                     cell.FlatAppearance.BorderSize = 0;
@@ -167,6 +169,7 @@ namespace Minesweeper
                     cell.FlatAppearance.MouseDownBackColor = Color.Transparent;
                     cell.Paint += new PaintEventHandler(CellButton_Paint);
                     cell.MouseUp += new MouseEventHandler(BtnCell_MouseUp);
+                    cell.MouseDown += new MouseEventHandler(BtnCell_MouseDown);
                     game.AddCell(cell);
                     CellsPanel.Controls.Add(cell);
                 }
@@ -203,10 +206,19 @@ namespace Minesweeper
             {
                 if (cellButton.IsDown && cellButton.VisibleState != CellVisible.Open)
                 {
-                    BtnSmile.Image = Properties.Resources.SimpleSmile;                    
+                    BtnSmile.Image = Properties.Resources.SimpleSmile;
                     game.OpenCell(cellButton);
-                    cellButton.IsDown = false;                    
+                    cellButton.IsDown = false;
                 }
+            }
+        }
+        private void BtnCell_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (!(sender is Cell cellButton)) return;
+            else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open)
+            {
+                cellButton.VisibleState = cellButton.VisibleState == CellVisible.Flag ?
+                                                    CellVisible.Hide : CellVisible.Flag;
             }
         }
 
