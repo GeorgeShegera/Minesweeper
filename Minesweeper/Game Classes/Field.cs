@@ -52,6 +52,7 @@ namespace Minesweeper
             {
                 foreach (Cell cell in cells)
                 {
+                    cell.Enabled = true;
                     if (cell.Type == TypeOfCell.Empty)
                     {
                         int number = CountNeighboringMines(cell.Point);
@@ -64,9 +65,9 @@ namespace Minesweeper
 
         public void Clear()
         {
-            foreach(List<Cell> cells in Cells)
+            foreach (List<Cell> cells in Cells)
             {
-                foreach(Cell cell in cells)
+                foreach (Cell cell in cells)
                 {
                     cell.Type = TypeOfCell.Empty;
                     cell.Number = 0;
@@ -89,6 +90,7 @@ namespace Minesweeper
         {
             if (cell.VisibleState != CellVisible.Hide) return;
             cell.VisibleState = CellVisible.Open;
+            if (cell.Type == TypeOfCell.Mine) return;
             List<Cell> neighboringCells = NeighbouringCells(cell.Point);
             if (!neighboringCells.Any(x => x.Type == TypeOfCell.Mine))
             {

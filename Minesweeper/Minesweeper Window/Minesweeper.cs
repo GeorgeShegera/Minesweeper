@@ -21,7 +21,7 @@ namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
     {
-        private Game game = new Game(GameLevel.Beginner);
+        private Game game = new Game(GameLevel.Intermediate);
         private int CellsPanelBorWidth { get; } = 5;
         private int OutterPanelBorWidth { get; } = 5;
         private int CellBorderWidth { get; } = 4;
@@ -143,7 +143,6 @@ namespace Minesweeper
 
         private void MineSweeperWnd_Load(object sender, EventArgs e)
         {
-            game = new Game(GameLevel.Beginner);
             BackColor = Color.FromArgb(189, 189, 189);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             RefreshField();
@@ -217,7 +216,8 @@ namespace Minesweeper
             {
                 if (cellButton.IsDown && cellButton.VisibleState == CellVisible.Hide)
                 {
-                    BtnSmile.Image = Properties.Resources.SimpleSmile;
+                    if (cellButton.Type == TypeOfCell.Mine) BtnSmile.Image = Properties.Resources.LoseSmile;
+                    else BtnSmile.Image = Properties.Resources.SimpleSmile;
                     game.OpenCell(cellButton);
                     cellButton.IsDown = false;
                 }
@@ -225,7 +225,7 @@ namespace Minesweeper
         }
         private void BtnCell_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!(sender is Cell cellButton)) return;
+            if (!(sender is Cell cellButton) || game.EndOfGame) return;
             else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open)
             {
                 cellButton.VisibleState = cellButton.VisibleState == CellVisible.Flag ?
@@ -273,6 +273,7 @@ namespace Minesweeper
         private Cell prevCellButton = null;
         private void Timer_Tick(object sender, EventArgs e)
         {
+            if (game.EndOfGame) return;
             Rectangle r = CellsPanel.RectangleToScreen(CellsPanel.ClientRectangle);
             if (r.Contains(MousePosition))
             {
