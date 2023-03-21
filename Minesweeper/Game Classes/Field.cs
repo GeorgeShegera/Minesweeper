@@ -62,6 +62,20 @@ namespace Minesweeper
             }
         }
 
+        public void Clear()
+        {
+            foreach(List<Cell> cells in Cells)
+            {
+                foreach(Cell cell in cells)
+                {
+                    cell.Type = TypeOfCell.Empty;
+                    cell.Number = 0;
+                    cell.VisibleState = CellVisible.Hide;
+                    cell.Text = "";
+                }
+            }
+        }
+
         public int CountNeighboringMines(CellPoint point)
         {
             int count = 0;

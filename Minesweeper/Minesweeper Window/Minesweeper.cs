@@ -146,7 +146,18 @@ namespace Minesweeper
             game = new Game(GameLevel.Beginner);
             BackColor = Color.FromArgb(189, 189, 189);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            RefreshField();
+        }
 
+        private void RefreshGame(GameLevel gameLevel)
+        {
+
+        }
+
+        private void RefreshField()
+        {
+            game.Field = new Field();
+            CellsPanel.Controls.Clear();
             for (int i = 0; i < game.Height; i++)
             {
                 for (int j = 0; j < game.Width; j++)
@@ -204,7 +215,7 @@ namespace Minesweeper
             if (!(FindControlAtCursor(this) is Cell cellButton)) return;
             else if (e.Button == MouseButtons.Left)
             {
-                if (cellButton.IsDown && cellButton.VisibleState != CellVisible.Open)
+                if (cellButton.IsDown && cellButton.VisibleState == CellVisible.Hide)
                 {
                     BtnSmile.Image = Properties.Resources.SimpleSmile;
                     game.OpenCell(cellButton);
@@ -234,6 +245,7 @@ namespace Minesweeper
             if (e.Button != MouseButtons.Left) return;
             (sender as PictureBox).Invalidate();
             SmileBtnDown = false;
+            game.RefreshField();
         }
 
         public static Control FindControlAtCursor(Form form)

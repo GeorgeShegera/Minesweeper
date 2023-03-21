@@ -154,13 +154,7 @@
     <None Include="Resources\9.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Smile.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Untitled %281%29.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Untitled.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SmileLose.png" />
@@ -173,6 +167,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Flag.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Mine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WrongMine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TriggeredMine.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

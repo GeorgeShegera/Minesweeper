@@ -28,7 +28,7 @@ namespace Minesweeper
                             Text = Number.ToString();
                             break;
                         case TypeOfCell.Mine:
-                            BackgroundImage = Properties.Resources.SimpleSmile;
+                            BackgroundImage = Properties.Resources.Mine;
                             break;
                     }
                 }
