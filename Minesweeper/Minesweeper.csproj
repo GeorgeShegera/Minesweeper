@@ -61,9 +61,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CelllPoint.cs" />
+    <Compile Include="Game Classes\CellPoint.cs" />
     <Compile Include="Enums\CellState.cs" />
     <Compile Include="Game Classes\Field.cs" />
+    <Compile Include="Enums\GameState.cs" />
     <Compile Include="Minesweeper Window\CounterPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -176,6 +177,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\TriggeredMine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\WinSmile.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

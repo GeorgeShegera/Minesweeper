@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Minesweeper
         public int Width { get; }
         public int Mines { get; }
         public Field Field { get; set; } = new Field();
-        public bool EndOfGame { get; set; } = false;
+        public GameState State { get; set; } = GameState.InProgress;
         public Game(GameLevel level)
         {
             switch (level)
@@ -43,12 +44,14 @@ namespace Minesweeper
             }
         }
         public void AddCell(Cell cell) => Field.AddCell(cell, Width);
+
         public void RefreshField()
         {
-            EndOfGame = false;
+            State = GameState.InProgress;
             Field.Clear();
             Field.Fill(Mines, Height, Width);
         }
+
         public void OpenCell(Cell cell)
         {
             Field.OpenCell(cell);
@@ -57,23 +60,25 @@ namespace Minesweeper
                 cell.BackgroundImage = Properties.Resources.TriggeredMine;
                 GameLose();
             }
+            else if (CheckWin())
+            {
+                GameWin();
+            }
         }
 
         public void GameLose()
         {
-            EndOfGame = true;
+            State = GameState.Lose;
             foreach (List<Cell> cells in Field.Cells)
             {
                 foreach (Cell cell in cells)
-                {                    
-                    if(cell.VisibleState == CellVisible.Hide && cell.Type == TypeOfCell.Mine)
+                {
+                    if (cell.VisibleState == CellVisible.Hide && cell.Type == TypeOfCell.Mine)
                     {
-                        cell.Enabled = false;
                         cell.VisibleState = CellVisible.Open;
                     }
-                    else if(cell.VisibleState == CellVisible.Flag && cell.Type !=TypeOfCell.Mine)
+                    else if (cell.VisibleState == CellVisible.Flag && cell.Type != TypeOfCell.Mine)
                     {
-                        cell.Enabled = false;
                         cell.VisibleState = CellVisible.Open;
                         cell.Text = "";
                         cell.BackgroundImage = Properties.Resources.WrongMine;
@@ -81,5 +86,23 @@ namespace Minesweeper
                 }
             }
         }
+
+        public void GameWin()
+        {
+            State = GameState.Win;
+            foreach (List<Cell> cells in Field.Cells)
+            {
+                foreach (Cell cell in cells)
+                {
+                    if (cell.VisibleState == CellVisible.Hide && cell.Type == TypeOfCell.Mine)
+                        cell.VisibleState = CellVisible.Flag;
+                }
+            }
+        }
+
+        public bool CheckWin() => !Field.Cells.Any(x => x.Any(y =>
+                                        y.Type != TypeOfCell.Mine && y.VisibleState != CellVisible.Open));
+
+        public bool EndOfGame() => State != GameState.InProgress;
     }
 }

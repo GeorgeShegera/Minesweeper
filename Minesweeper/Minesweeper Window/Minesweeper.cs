@@ -21,7 +21,7 @@ namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
     {
-        private Game game = new Game(GameLevel.Intermediate);
+        private Game game = new Game(GameLevel.Beginner);
         private int CellsPanelBorWidth { get; } = 5;
         private int OutterPanelBorWidth { get; } = 5;
         private int CellBorderWidth { get; } = 4;
@@ -211,21 +211,22 @@ namespace Minesweeper
 
         private void BtnCell_MouseUp(object sender, MouseEventArgs e)
         {
-            if (!(FindControlAtCursor(this) is Cell cellButton)) return;
+            if (!(FindControlAtCursor(this) is Cell cellButton) || game.EndOfGame()) return;
             else if (e.Button == MouseButtons.Left)
             {
                 if (cellButton.IsDown && cellButton.VisibleState == CellVisible.Hide)
                 {
-                    if (cellButton.Type == TypeOfCell.Mine) BtnSmile.Image = Properties.Resources.LoseSmile;
-                    else BtnSmile.Image = Properties.Resources.SimpleSmile;
                     game.OpenCell(cellButton);
+                    if (game.State == GameState.Lose) BtnSmile.Image = Properties.Resources.LoseSmile;
+                    else if (game.State == GameState.Win) BtnSmile.Image = Properties.Resources.WinSmile;
+                    else BtnSmile.Image = Properties.Resources.SimpleSmile;
                     cellButton.IsDown = false;
                 }
             }
         }
         private void BtnCell_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!(sender is Cell cellButton) || game.EndOfGame) return;
+            if (!(sender is Cell cellButton) || game.EndOfGame()) return;
             else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open)
             {
                 cellButton.VisibleState = cellButton.VisibleState == CellVisible.Flag ?
@@ -273,7 +274,7 @@ namespace Minesweeper
         private Cell prevCellButton = null;
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (game.EndOfGame) return;
+            if (game.EndOfGame()) return;
             Rectangle r = CellsPanel.RectangleToScreen(CellsPanel.ClientRectangle);
             if (r.Contains(MousePosition))
             {
