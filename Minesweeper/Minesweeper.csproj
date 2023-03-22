@@ -125,39 +125,6 @@
     <None Include="Resources\mines-sweeperIcon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\0.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\3.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\4.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\5.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\6.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\7.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\8.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\9.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Untitled %281%29.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\SmileLose.png" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +147,39 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\WinSmile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Zero.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\One.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Two.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Three.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Four.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Five.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Six.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Seven.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Eight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Nine.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Minus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

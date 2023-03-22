@@ -10,7 +10,7 @@ namespace Minesweeper
 {
     internal class Game
     {
-        public GameLevel Level { get; set; }
+        public GameLevel Level { get; }
         public int Height { get; }
         public int Width { get; }
         public int Mines { get; }
@@ -46,7 +46,7 @@ namespace Minesweeper
         public void AddCell(Cell cell) => Field.AddCell(cell, Width);
 
         public void RefreshField()
-        {
+        {            
             State = GameState.InProgress;
             Field.Clear();
             Field.Fill(Mines, Height, Width);
@@ -63,6 +63,21 @@ namespace Minesweeper
             else if (CheckWin())
             {
                 GameWin();
+            }
+        }
+
+        public void SmartOpen(Cell cell)
+        {
+            if (cell.Type != TypeOfCell.Number || cell.VisibleState != CellVisible.Open) return;
+            List<Cell> neighboringCells = Field.NeighbouringCells(cell.Point);
+            int flags = neighboringCells.Where(x => x.VisibleState == CellVisible.Flag).Count();
+            if (flags == cell.Number)
+            {
+                neighboringCells.ForEach((neigbCell) => 
+                {
+                    if(neigbCell.VisibleState != CellVisible.Flag)
+                    OpenCell(neigbCell);
+                });
             }
         }
 

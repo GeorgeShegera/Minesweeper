@@ -102,7 +102,7 @@ namespace Minesweeper
         private bool ValidateCoords(int coordX, int coordY)
             => coordY >= 0 && coordX >= 0 && coordY < Cells.Count && coordX < Cells.First().Count;
 
-        private List<Cell> NeighbouringCells(CellPoint point)
+        public List<Cell> NeighbouringCells(CellPoint point)
         {
             List<Cell> neighbouringCells = new List<Cell>();
             for (int i = -1; i <= 1; i++)

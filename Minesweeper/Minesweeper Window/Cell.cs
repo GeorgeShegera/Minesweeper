@@ -32,12 +32,12 @@ namespace Minesweeper
                             break;
                     }
                 }
-                else if(value == CellVisible.Flag)
+                else if (value == CellVisible.Flag)
                 {
-                    
+
                     BackgroundImage = Properties.Resources.Flag;
                 }
-                else if(value == CellVisible.Hide)
+                else if (value == CellVisible.Hide)
                 {
                     BackgroundImage = null;
                 }
@@ -88,7 +88,7 @@ namespace Minesweeper
 
         public Cell(int value = 0, TypeOfCell type = TypeOfCell.Empty, CellPoint cellPoint = default)
             : base()
-        {
+        {            
             Point = cellPoint;
             Number = value;
             Type = type;

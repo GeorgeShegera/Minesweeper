@@ -16,12 +16,13 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
     {
-        private Game game = new Game(GameLevel.Beginner);
+        private Game game;
         private int CellsPanelBorWidth { get; } = 5;
         private int OutterPanelBorWidth { get; } = 5;
         private int CellBorderWidth { get; } = 4;
@@ -49,35 +50,11 @@ namespace Minesweeper
 
         public MineSweeperWnd()
         {
+            game = new Game(GameLevel.Beginner);
             InitializeComponent();
+            TsiBeginner.Checked = true;
             menuStrip.BackColor = Color.FromArgb(235, 233, 217);
-            // Outter Panel
-            OutterPanel.Size = new Size(GetCellsPanelWidth + OutterPanelIndent * 2, UpperPanelHeight + GetCellsPanelHeight + OutterPanelIndent * 3);
-            OutterPanel.Location = new Point(0, menuStrip.Height);
-            // Window Size
-            ClientSize = new Size(OutterPanel.Width, OutterPanel.Height + menuStrip.Height);
-            // Cells Panel
-            CellsPanel.Width = GetCellsPanelWidth;
-            CellsPanel.Height = GetCellsPanelHeight;
-            CellsPanel.Location = new Point(OutterPanelIndent, UpperPanelHeight + OutterPanelIndent * 2);
-            // Upper Panel
-            UpperPanel.Width = GetCellsPanelWidth;
-            UpperPanel.Height = UpperPanelHeight;
-            UpperPanel.Location = new Point(OutterPanelIndent, OutterPanelIndent);
-            // Timer Panel
-            PanelTimer.Size = new Size(CounterPanelWidth, CounterPanelHeight);
-            PanelTimer.Location = new Point(GetCellsPanelWidth - PanelTimer.Width - UpperPanelIndent, UpperPanelIndent);
-            // Mines Panel
-            MinesCounterPanel.Size = new Size(CounterPanelWidth, CounterPanelHeight);
-            MinesCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);
-            // Adding Upper Panels
-            PanelTimer.Controls.AddRange(GetCounters().ToArray());
-            MinesCounterPanel.Controls.AddRange(GetCounters().ToArray());
-            // Smile button            
-            BtnSmile.Size = new Size(CounterPanelHeight, CounterPanelHeight);
-            BtnSmile.BackColor = Color.FromArgb(123, 123, 123);
-            BtnSmile.Location = new Point((GetCellsPanelWidth - CounterPanelHeight) / 2, UpperPanelIndent);
-            BtnSmile.Image = Properties.Resources.SimpleSmile;
+            ReloadWindow();
             // Fonts
             MyFonts = new PrivateFontCollection();
             using (MemoryStream fontStream = new MemoryStream(Properties.Resources.mine_sweeper))
@@ -91,24 +68,7 @@ namespace Minesweeper
             }
             Timer.Start();
 
-            List<CounterPictureBox> GetCounters()
-            {
-                const int numCount = 3;
-                int width = (CounterPanelWidth - UpperPanelBorder * 2) / numCount;
-                List<CounterPictureBox> result = new List<CounterPictureBox>();
-                for (int i = 0; i < numCount; i++)
-                {
-                    CounterPictureBox pictureBox = new CounterPictureBox
-                    {
-                        Size = new Size(width, CounterPanelHeight - UpperPanelBorder * 2),
-                        Location = new Point(width * i + UpperPanelBorder, UpperPanelBorder),
-                        SizeMode = PictureBoxSizeMode.StretchImage,
-                        Image = Properties.Resources.Nine
-                    };
-                    result.Add(pictureBox);
-                }
-                return result;
-            }
+
         }
 
         private void CellButton_Paint(object sender, PaintEventArgs e)
@@ -148,9 +108,55 @@ namespace Minesweeper
             RefreshField();
         }
 
-        private void RefreshGame(GameLevel gameLevel)
+        private void ReloadWindow()
         {
+            // Outter Panel
+            OutterPanel.Size = new Size(GetCellsPanelWidth + OutterPanelIndent * 2, UpperPanelHeight + GetCellsPanelHeight + OutterPanelIndent * 3);
+            OutterPanel.Location = new Point(0, menuStrip.Height);
+            // Window Size
+            ClientSize = new Size(OutterPanel.Width, OutterPanel.Height + menuStrip.Height);
+            // Cells Panel
+            CellsPanel.Width = GetCellsPanelWidth;
+            CellsPanel.Height = GetCellsPanelHeight;
+            CellsPanel.Location = new Point(OutterPanelIndent, UpperPanelHeight + OutterPanelIndent * 2);
+            // Upper Panel
+            UpperPanel.Width = GetCellsPanelWidth;
+            UpperPanel.Height = UpperPanelHeight;
+            UpperPanel.Location = new Point(OutterPanelIndent, OutterPanelIndent);
+            // Timer Panel
+            PanelTimer.Size = new Size(CounterPanelWidth, CounterPanelHeight);
+            PanelTimer.Location = new Point(GetCellsPanelWidth - PanelTimer.Width - UpperPanelIndent, UpperPanelIndent);
+            // Mines Panel
+            MinesCounterPanel.Size = new Size(CounterPanelWidth, CounterPanelHeight);
+            MinesCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);
+            // Adding Upper Panels
+            PanelTimer.Controls.AddRange(GetCounters().ToArray());
+            MinesCounterPanel.Controls.AddRange(GetCounters().ToArray());
+            // Smile button            
+            BtnSmile.Size = new Size(CounterPanelHeight, CounterPanelHeight);
+            BtnSmile.BackColor = Color.FromArgb(123, 123, 123);
+            BtnSmile.Location = new Point((GetCellsPanelWidth - CounterPanelHeight) / 2, UpperPanelIndent);
+            BtnSmile.Image = Properties.Resources.SimpleSmile;
+            Refresh();
 
+            List<CounterPictureBox> GetCounters()
+            {
+                const int numCount = 3;
+                int width = (CounterPanelWidth - UpperPanelBorder * 2) / numCount;
+                List<CounterPictureBox> result = new List<CounterPictureBox>();
+                for (int i = 0; i < numCount; i++)
+                {
+                    CounterPictureBox pictureBox = new CounterPictureBox
+                    {
+                        Size = new Size(width, CounterPanelHeight - UpperPanelBorder * 2),
+                        Location = new Point(width * i + UpperPanelBorder, UpperPanelBorder),
+                        SizeMode = PictureBoxSizeMode.StretchImage,
+                        Image = Properties.Resources.Zero
+                    };
+                    result.Add(pictureBox);
+                }
+                return result;
+            }
         }
 
         private void RefreshField()
@@ -212,22 +218,43 @@ namespace Minesweeper
         private void BtnCell_MouseUp(object sender, MouseEventArgs e)
         {
             if (!(FindControlAtCursor(this) is Cell cellButton) || game.EndOfGame()) return;
+            if (m_left && m_right)
+            {
+                game.SmartOpen(cellButton);
+                OpenResult();
+            }
             else if (e.Button == MouseButtons.Left)
             {
-                if (cellButton.IsDown && cellButton.VisibleState == CellVisible.Hide)
+                if (cellButton.IsDown && cellButton.VisibleState == CellVisible.Hide &&
+                    (!m_right || !m_left))
                 {
                     game.OpenCell(cellButton);
-                    if (game.State == GameState.Lose) BtnSmile.Image = Properties.Resources.LoseSmile;
-                    else if (game.State == GameState.Win) BtnSmile.Image = Properties.Resources.WinSmile;
-                    else BtnSmile.Image = Properties.Resources.SimpleSmile;
+                    OpenResult();
                     cellButton.IsDown = false;
                 }
+            }
+            if (e.Button == MouseButtons.Left)
+                m_left = false;
+            if (e.Button == MouseButtons.Right)
+                m_right = false;
+
+            void OpenResult()
+            {               
+                if (game.State == GameState.Lose) BtnSmile.Image = Properties.Resources.LoseSmile;
+                else if (game.State == GameState.Win) BtnSmile.Image = Properties.Resources.WinSmile;
+                else BtnSmile.Image = Properties.Resources.SimpleSmile;
             }
         }
         private void BtnCell_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Left)
+                m_left = true;
+            if (e.Button == MouseButtons.Right)
+                m_right = true;
+
             if (!(sender is Cell cellButton) || game.EndOfGame()) return;
-            else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open)
+            else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open &&
+                    (!m_right || !m_left))
             {
                 cellButton.VisibleState = cellButton.VisibleState == CellVisible.Flag ?
                                                     CellVisible.Hide : CellVisible.Flag;
@@ -246,6 +273,8 @@ namespace Minesweeper
             if (e.Button != MouseButtons.Left) return;
             (sender as PictureBox).Invalidate();
             SmileBtnDown = false;
+            m_left = false;
+            m_right = false;
             game.RefreshField();
         }
 
@@ -272,6 +301,9 @@ namespace Minesweeper
         }
 
         private Cell prevCellButton = null;
+        private List<Cell> neighboringCells = null;
+        private bool m_right = false;
+        private bool m_left = false;
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (game.EndOfGame()) return;
@@ -279,20 +311,38 @@ namespace Minesweeper
             if (r.Contains(MousePosition))
             {
                 if (prevCellButton != null) RemovePreviousStyle();
+                Control control = FindControlAtCursor(this);
+                if (!(control is Cell btnCell)) return;
+                if (m_left && m_right)
+                {
+                    neighboringCells = game.Field.NeighbouringCells(btnCell.Point);
+                    foreach (Cell neighborCell in neighboringCells)
+                    {
+                        neighborCell.IsDown = true;
+                        neighborCell.Invalidate();
+                    }
+                }
                 if ((MouseButtons & MouseButtons.Left) != 0)
                 {
-                    Control control = FindControlAtCursor(this);
-                    if (!(control is Cell btnCell)) return;
                     BtnSmile.Image = Properties.Resources.PressingSmile;
                     btnCell.IsDown = true;
                     prevCellButton = btnCell;
                     btnCell.Invalidate();
                 }
             }
-            else if (prevCellButton != null) RemovePreviousStyle();
+            else if (prevCellButton != null || neighboringCells != null) RemovePreviousStyle();
 
             void RemovePreviousStyle()
             {
+                if (neighboringCells != null)
+                {
+                    foreach (Cell neighborCell in neighboringCells)
+                    {
+                        neighborCell.IsDown = false;
+                        neighborCell.Invalidate();
+                    }
+                }
+                neighboringCells = null;
                 BtnSmile.Image = Properties.Resources.SimpleSmile;
                 prevCellButton.IsDown = false;
                 prevCellButton.Invalidate();
@@ -324,6 +374,46 @@ namespace Minesweeper
                Color.FromArgb(123, 123, 123), UpperPanelBorder, ButtonBorderStyle.Solid,
                Color.FromArgb(255, 255, 255), UpperPanelBorder, ButtonBorderStyle.Solid,
                Color.FromArgb(255, 255, 255), UpperPanelBorder, ButtonBorderStyle.Solid);
+        }
+
+        private void MineSweeperWnd_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F2) game.RefreshField();
+        }
+
+        private void TsiExit_Click(object sender, EventArgs e) => Close();
+
+        private void TsiNew_Click(object sender, EventArgs e) => game.RefreshField();
+
+        private void TsiBeginner_MouseDown(object sender, MouseEventArgs e)
+        {
+            var thisTsmi = (ToolStripMenuItem)sender;
+            var parent = thisTsmi.GetCurrentParent();
+            foreach (ToolStripItem tsi in parent.Items)
+            {
+                if (tsi is ToolStripMenuItem tsmi)
+                {
+                    tsmi.Checked = thisTsmi == tsmi;
+                }
+            }
+            GameLevel newLevel = new GameLevel();
+            if (TsiBeginner.Checked)
+            {
+                newLevel = GameLevel.Beginner;
+            }
+            else if (TsiIntermediate.Checked)
+            {
+                newLevel = GameLevel.Intermediate;
+            }
+            else if (TsiExpert.Checked)
+            {
+                newLevel = GameLevel.Expert;
+            }
+            parent.Hide();
+            game = new Game(newLevel);
+            ReloadWindow();
+            RefreshField();
+            CenterToScreen();
         }
     }
 }
