@@ -15,6 +15,7 @@ namespace Minesweeper
             get => number;
             set
             {
+                if (value < 0 || value > 9) return;
                 number = value;
                 switch (number)
                 {
@@ -22,8 +23,31 @@ namespace Minesweeper
                         Image = Properties.Resources.Zero;
                         break;
                     case 1:
-                        {
-                        }
+                        Image = Properties.Resources.One;
+                        break;
+                    case 2:
+                        Image = Properties.Resources.Two;
+                        break;
+                    case 3:
+                        Image = Properties.Resources.Three;
+                        break;
+                    case 4:
+                        Image = Properties.Resources.Four;
+                        break;
+                    case 5:
+                        Image = Properties.Resources.Five;
+                        break;
+                    case 6:
+                        Image = Properties.Resources.Six;
+                        break;
+                    case 7:
+                        Image = Properties.Resources.Seven;
+                        break;
+                    case 8:
+                        Image = Properties.Resources.Eight;
+                        break;
+                    case 9:
+                        Image = Properties.Resources.Nine;
                         break;
                 }
             }

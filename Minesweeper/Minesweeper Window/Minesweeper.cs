@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
@@ -21,38 +22,23 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
-    {
-        private Game game;
-        private int CellsPanelBorWidth { get; } = 5;
-        private int OutterPanelBorWidth { get; } = 5;
-        private int CellBorderWidth { get; } = 4;
-        private int CellSize { get; } = 30;
-        private int OutterPanelIndent { get; } = 15;
-        private int UpperPanelHeight { get; } = 60;
-        private int CounterPanelHeight { get; } = 40;
-        private int UpperPanelBorder { get; } = 3;
-        private int CounterPanelWidth { get => CounterPanelHeight * 23 / 13; }
-        private int GetCellsPanelWidth { get => game.Width * CellSize + CellsPanelBorWidth * 2; }
-        private int GetCellsPanelHeight { get => game.Height * CellSize + CellsPanelBorWidth * 2; }
-        private int UpperPanelIndent { get => (UpperPanelHeight - CounterPanelHeight) / 2; }
-        private bool smileBtnDown;
-        private bool SmileBtnDown
+    {        
+        public MineSweeperWnd(GameLevel gameLevel = GameLevel.Beginner)
         {
-            get => smileBtnDown;
-            set
-            {
-                if (value) BtnSmile.Padding = new Padding(4, 4, 0, 0);
-                else BtnSmile.Padding = new Padding(0, 0, 0, 0);
-                smileBtnDown = value;
-            }
-        }
-        private PrivateFontCollection MyFonts { get; }
-
-        public MineSweeperWnd()
-        {
-            game = new Game(GameLevel.Beginner);
+            game = new Game(gameLevel);
             InitializeComponent();
-            TsiBeginner.Checked = true;
+            switch (gameLevel)
+            {
+                case GameLevel.Beginner:
+                    TsiBeginner.Checked = true;
+                    break;
+                case GameLevel.Intermediate:
+                    TsiIntermediate.Checked = true;
+                    break;
+                case GameLevel.Expert:
+                    TsiExpert.Checked = true;
+                    break;
+            }            
             menuStrip.BackColor = Color.FromArgb(235, 233, 217);
             ReloadWindow();
             // Fonts
@@ -66,9 +52,7 @@ namespace Minesweeper
                 MyFonts.AddMemoryFont(data, (int)fontStream.Length);
                 Marshal.FreeCoTaskMem(data);
             }
-            Timer.Start();
-
-
+            FieldTimer.Start();
         }
 
         private void CellButton_Paint(object sender, PaintEventArgs e)
@@ -105,7 +89,7 @@ namespace Minesweeper
         {
             BackColor = Color.FromArgb(189, 189, 189);
             FormBorderStyle = FormBorderStyle.FixedSingle;
-            RefreshField();
+            ReloadField();
         }
 
         private void ReloadWindow()
@@ -124,15 +108,22 @@ namespace Minesweeper
             UpperPanel.Height = UpperPanelHeight;
             UpperPanel.Location = new Point(OutterPanelIndent, OutterPanelIndent);
             // Timer Panel
-            PanelTimer.Size = new Size(CounterPanelWidth, CounterPanelHeight);
-            PanelTimer.Location = new Point(GetCellsPanelWidth - PanelTimer.Width - UpperPanelIndent, UpperPanelIndent);
-            // Mines Panel
+            List<CounterPictureBox> pictureBoxes = GetCounters();
+            TimerPanel = new CounterPanel(pictureBoxes, 0);
+            UpperPanel.Controls.Add(TimerPanel);
+            TimerPanel.Size = new Size(CounterPanelWidth, CounterPanelHeight);
+            TimerPanel.Location = new Point(GetCellsPanelWidth - TimerPanel.Width - UpperPanelIndent, UpperPanelIndent);
+            TimerPanel.Controls.AddRange(pictureBoxes.ToArray());
+            TimerPanel.Paint += new PaintEventHandler(UpperInnerPanel_Paint);
+            // Mines Counter Panel
+            pictureBoxes = GetCounters();
+            MinesCounterPanel = new CounterPanel(pictureBoxes, game.Mines);
+            UpperPanel.Controls.Add(MinesCounterPanel);
             MinesCounterPanel.Size = new Size(CounterPanelWidth, CounterPanelHeight);
-            MinesCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);
-            // Adding Upper Panels
-            PanelTimer.Controls.AddRange(GetCounters().ToArray());
-            MinesCounterPanel.Controls.AddRange(GetCounters().ToArray());
-            // Smile button            
+            MinesCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);            
+            MinesCounterPanel.Controls.AddRange(pictureBoxes.ToArray());
+            MinesCounterPanel.Paint += new PaintEventHandler(UpperInnerPanel_Paint);
+            // Smile button 
             BtnSmile.Size = new Size(CounterPanelHeight, CounterPanelHeight);
             BtnSmile.BackColor = Color.FromArgb(123, 123, 123);
             BtnSmile.Location = new Point((GetCellsPanelWidth - CounterPanelHeight) / 2, UpperPanelIndent);
@@ -159,7 +150,7 @@ namespace Minesweeper
             }
         }
 
-        private void RefreshField()
+        private void ReloadField()
         {
             game.Field = new Field();
             CellsPanel.Controls.Clear();
@@ -239,7 +230,7 @@ namespace Minesweeper
                 m_right = false;
 
             void OpenResult()
-            {               
+            {
                 if (game.State == GameState.Lose) BtnSmile.Image = Properties.Resources.LoseSmile;
                 else if (game.State == GameState.Win) BtnSmile.Image = Properties.Resources.WinSmile;
                 else BtnSmile.Image = Properties.Resources.SimpleSmile;
@@ -256,8 +247,22 @@ namespace Minesweeper
             else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open &&
                     (!m_right || !m_left))
             {
-                cellButton.VisibleState = cellButton.VisibleState == CellVisible.Flag ?
-                                                    CellVisible.Hide : CellVisible.Flag;
+                if (cellButton.VisibleState == CellVisible.Flag)
+                {
+                    cellButton.VisibleState = CellVisible.Hide;
+                    MinesCounterPanel.Number++;
+                }
+                else if (MinesCounterPanel.Number == 0)
+                {                    
+                    MessageBox.Show("You don't have flags", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    m_left = false;
+                    m_right = false;
+                }      
+                else if (cellButton.VisibleState == CellVisible.Hide)
+                {
+                    cellButton.VisibleState = CellVisible.Flag;
+                    MinesCounterPanel.Number--;
+                }
             }
         }
 
@@ -273,6 +278,7 @@ namespace Minesweeper
             if (e.Button != MouseButtons.Left) return;
             (sender as PictureBox).Invalidate();
             SmileBtnDown = false;
+            MinesCounterPanel.Number = game.Mines;
             m_left = false;
             m_right = false;
             game.RefreshField();
@@ -409,11 +415,10 @@ namespace Minesweeper
             {
                 newLevel = GameLevel.Expert;
             }
-            parent.Hide();
-            game = new Game(newLevel);
-            ReloadWindow();
-            RefreshField();
-            CenterToScreen();
+            Hide();
+            MineSweeperWnd mineSweeper = new MineSweeperWnd(newLevel);
+            mineSweeper.ShowDialog();
+            Close();
         }
     }
 }

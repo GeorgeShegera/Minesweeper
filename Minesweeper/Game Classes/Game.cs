@@ -46,7 +46,7 @@ namespace Minesweeper
         public void AddCell(Cell cell) => Field.AddCell(cell, Width);
 
         public void RefreshField()
-        {            
+        {
             State = GameState.InProgress;
             Field.Clear();
             Field.Fill(Mines, Height, Width);
@@ -73,10 +73,10 @@ namespace Minesweeper
             int flags = neighboringCells.Where(x => x.VisibleState == CellVisible.Flag).Count();
             if (flags == cell.Number)
             {
-                neighboringCells.ForEach((neigbCell) => 
+                neighboringCells.ForEach((neigbCell) =>
                 {
-                    if(neigbCell.VisibleState != CellVisible.Flag)
-                    OpenCell(neigbCell);
+                    if (neigbCell.VisibleState != CellVisible.Flag)
+                        OpenCell(neigbCell);
                 });
             }
         }
@@ -84,20 +84,17 @@ namespace Minesweeper
         public void GameLose()
         {
             State = GameState.Lose;
-            foreach (List<Cell> cells in Field.Cells)
+            foreach (CellPoint minePoint in Field.MinesPoints)
             {
-                foreach (Cell cell in cells)
+                if (Field[minePoint].VisibleState == CellVisible.Hide && Field[minePoint].Type == TypeOfCell.Mine)
                 {
-                    if (cell.VisibleState == CellVisible.Hide && cell.Type == TypeOfCell.Mine)
-                    {
-                        cell.VisibleState = CellVisible.Open;
-                    }
-                    else if (cell.VisibleState == CellVisible.Flag && cell.Type != TypeOfCell.Mine)
-                    {
-                        cell.VisibleState = CellVisible.Open;
-                        cell.Text = "";
-                        cell.BackgroundImage = Properties.Resources.WrongMine;
-                    }
+                    Field[minePoint].VisibleState = CellVisible.Open;
+                }
+                else if (Field[minePoint].VisibleState == CellVisible.Flag && Field[minePoint].Type != TypeOfCell.Mine)
+                {
+                    Field[minePoint].VisibleState = CellVisible.Open;
+                    Field[minePoint].Text = "";
+                    Field[minePoint].BackgroundImage = Properties.Resources.WrongMine;
                 }
             }
         }

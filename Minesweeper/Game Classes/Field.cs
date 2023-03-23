@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +16,8 @@ namespace Minesweeper
     internal class Field
     {
         public List<List<Cell>> Cells { get; set; }
+        public List<CellPoint> MinesPoints { get; set; }
+
         public static readonly Color colorOne = Color.FromArgb(0, 38, 246);
         public static readonly Color colorTwo = Color.FromArgb(13, 127, 25);
         public static readonly Color colorThree = Color.FromArgb(246, 0, 18);
@@ -26,27 +30,28 @@ namespace Minesweeper
         public Field()
         {
             Cells = new List<List<Cell>>();
+            MinesPoints = new List<CellPoint>();
         }
 
         public void AddCell(Cell cell, int width)
         {
             if (Cells.Count != 0 && Cells.Last().Count < width) Cells.Last().Add(cell);
-            else Cells.Add(new List<Cell> { cell });
+            else Cells.Add(new List<Cell> { cell });            
         }
 
         public void Fill(int mines, int height, int width)
-        {
-            int coordX;
-            int coordY;
+        {            
             Random rnd = new Random();
             for (int i = 0; i < mines; i++)
             {
+                CellPoint point = new CellPoint();
                 do
                 {
-                    coordX = rnd.Next(0, width);
-                    coordY = rnd.Next(0, height);
-                } while (Cells[coordY][coordX].Type == TypeOfCell.Mine);
-                Cells[coordY][coordX].Type = TypeOfCell.Mine;
+                    point.X = rnd.Next(0, width);
+                    point.Y = rnd.Next(0, height);
+                } while (Cells[point.Y][point.X].Type == TypeOfCell.Mine);
+                Cells[point.Y][point.X].Type = TypeOfCell.Mine;
+                MinesPoints.Add(point);
             }
             foreach (List<Cell> cells in Cells)
             {
@@ -58,7 +63,7 @@ namespace Minesweeper
                         int number = CountNeighboringMines(cell.Point);
                         cell.Number = number;
                         cell.Type = number > 0 ? TypeOfCell.Number : TypeOfCell.Empty;
-                    }
+                    }                    
                 }
             }
         }
@@ -99,8 +104,8 @@ namespace Minesweeper
             }
         }
 
-        private bool ValidateCoords(int coordX, int coordY)
-            => coordY >= 0 && coordX >= 0 && coordY < Cells.Count && coordX < Cells.First().Count;
+        private bool ValidatePoint(CellPoint point)
+            => point.Y >= 0 && point.X >= 0 && point.Y < Cells.Count && point.X < Cells.First().Count;
 
         public List<Cell> NeighbouringCells(CellPoint point)
         {
@@ -109,12 +114,30 @@ namespace Minesweeper
             {
                 for (int j = -1; j <= 1; j++)
                 {
-                    int curCoordX = point.X + j, curCoordY = point.Y + i;
-                    if (i == 0 && j == 0 || !ValidateCoords(curCoordX, curCoordY)) continue;
-                    neighbouringCells.Add(Cells[curCoordY][curCoordX]);
+                    CellPoint newPoint = new CellPoint(point.X + j, point.Y + i);
+                    if (i == 0 && j == 0 || !ValidatePoint(newPoint)) continue;
+                    neighbouringCells.Add(Cells[newPoint.Y][newPoint.X]);
                 }
             }
             return neighbouringCells;
+        }
+
+        public Cell this[CellPoint point]
+        {
+            set
+            {
+                if (ValidatePoint(point))
+                    Cells[point.Y][point.X] = value;
+                else
+                    throw new IndexOutOfRangeException();
+            }
+            get
+            {
+                if (ValidatePoint(point))
+                    return Cells[point.Y][point.X];
+                else
+                    throw new IndexOutOfRangeException();
+            }
         }
     }
 }
