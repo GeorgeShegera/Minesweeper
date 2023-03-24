@@ -9,3 +9,4 @@ E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.c
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.CoreCompileInputs.cache
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.exe
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.RecordsWnd.resources

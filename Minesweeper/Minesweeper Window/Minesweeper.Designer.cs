@@ -42,6 +42,8 @@ namespace Minesweeper
             this.TsiBeginner = new System.Windows.Forms.ToolStripMenuItem();
             this.TsiIntermediate = new System.Windows.Forms.ToolStripMenuItem();
             this.TsiExpert = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.bestTimesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.TsiExit = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +82,8 @@ namespace Minesweeper
             this.TsiBeginner,
             this.TsiIntermediate,
             this.TsiExpert,
+            this.toolStripSeparator3,
+            this.bestTimesToolStripMenuItem,
             this.toolStripSeparator2,
             this.TsiExit});
             this.TsmiGame.Name = "TsmiGame";
@@ -90,45 +94,57 @@ namespace Minesweeper
             // 
             this.TsiNew.Name = "TsiNew";
             this.TsiNew.ShortcutKeyDisplayString = "F2";
-            this.TsiNew.Size = new System.Drawing.Size(141, 22);
+            this.TsiNew.Size = new System.Drawing.Size(180, 22);
             this.TsiNew.Text = "New";
             this.TsiNew.Click += new System.EventHandler(this.TsiNew_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(138, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // TsiBeginner
             // 
             this.TsiBeginner.Name = "TsiBeginner";
-            this.TsiBeginner.Size = new System.Drawing.Size(141, 22);
+            this.TsiBeginner.Size = new System.Drawing.Size(180, 22);
             this.TsiBeginner.Text = "Beginner";
             this.TsiBeginner.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TsiBeginner_MouseDown);
             // 
             // TsiIntermediate
             // 
             this.TsiIntermediate.Name = "TsiIntermediate";
-            this.TsiIntermediate.Size = new System.Drawing.Size(141, 22);
+            this.TsiIntermediate.Size = new System.Drawing.Size(180, 22);
             this.TsiIntermediate.Text = "Intermediate";
             this.TsiIntermediate.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TsiBeginner_MouseDown);
             // 
             // TsiExpert
             // 
             this.TsiExpert.Name = "TsiExpert";
-            this.TsiExpert.Size = new System.Drawing.Size(141, 22);
+            this.TsiExpert.Size = new System.Drawing.Size(180, 22);
             this.TsiExpert.Text = "Expert";
             this.TsiExpert.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TsiBeginner_MouseDown);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(177, 6);
+            // 
+            // bestTimesToolStripMenuItem
+            // 
+            this.bestTimesToolStripMenuItem.Name = "bestTimesToolStripMenuItem";
+            this.bestTimesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.bestTimesToolStripMenuItem.Text = "Best Times...";
+            this.bestTimesToolStripMenuItem.Click += new System.EventHandler(this.bestTimesToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(138, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // TsiExit
             // 
             this.TsiExit.Name = "TsiExit";
-            this.TsiExit.Size = new System.Drawing.Size(141, 22);
+            this.TsiExit.Size = new System.Drawing.Size(180, 22);
             this.TsiExit.Text = "Exit";
             this.TsiExit.Click += new System.EventHandler(this.TsiExit_Click);
             // 
@@ -185,7 +201,7 @@ namespace Minesweeper
             // 
             // BtnSmile
             // 
-            this.BtnSmile.Location = new System.Drawing.Point(88, 6);
+            this.BtnSmile.Location = new System.Drawing.Point(78, 6);
             this.BtnSmile.Name = "BtnSmile";
             this.BtnSmile.Size = new System.Drawing.Size(30, 29);
             this.BtnSmile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -285,6 +301,9 @@ namespace Minesweeper
         private int GetCellsPanelHeight { get => game.Height * CellSize + CellsPanelBorWidth * 2; }
         private int UpperPanelIndent { get => (UpperPanelHeight - CounterPanelHeight) / 2; }
         private bool smileBtnDown;
+        private ToolStripSeparator toolStripSeparator3;
+        private ToolStripMenuItem bestTimesToolStripMenuItem;
+
         private bool SmileBtnDown
         {
             get => smileBtnDown;

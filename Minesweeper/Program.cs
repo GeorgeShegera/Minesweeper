@@ -8,6 +8,13 @@ namespace Minesweeper
 {
     internal static class Program
     {
+        public static List<GameRecord> Records = new List<GameRecord>
+        {
+            new GameRecord(GameLevel.Beginner),
+            new GameRecord(GameLevel.Intermediate),
+            new GameRecord(GameLevel.Expert)
+        };
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

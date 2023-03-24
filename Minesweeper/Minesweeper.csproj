@@ -61,7 +61,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CounterPanel.cs">
+    <Compile Include="GameRecord.cs" />
+    <Compile Include="Minesweeper Window\CounterPanel.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Game Classes\CellPoint.cs" />
@@ -85,6 +86,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Enums\TypeOfCell.cs" />
+    <Compile Include="RecordsWnd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RecordsWnd.Designer.cs">
+      <DependentUpon>RecordsWnd.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Minesweeper Window\Minesweeper.resx">
       <DependentUpon>Minesweeper.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,6 +99,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RecordsWnd.resx">
+      <DependentUpon>RecordsWnd.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

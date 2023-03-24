@@ -448,5 +448,11 @@ namespace Minesweeper
         {
             TimerPanel.Number++;
         }
+
+        private void bestTimesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RecordsWnd recordsWnd = new RecordsWnd();
+            recordsWnd.ShowDialog();
+        }
     }
 }
