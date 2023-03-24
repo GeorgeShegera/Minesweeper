@@ -46,7 +46,7 @@ namespace Minesweeper
         public void AddCell(Cell cell) => Field.AddCell(cell, Width);
 
         public void RefreshField()
-        {
+        {            
             State = GameState.InProgress;
             Field.Clear();
             Field.Fill(Mines, Height, Width);
@@ -84,17 +84,20 @@ namespace Minesweeper
         public void GameLose()
         {
             State = GameState.Lose;
-            foreach (CellPoint minePoint in Field.MinesPoints)
+            foreach (List<Cell> cells in Field.Cells)
             {
-                if (Field[minePoint].VisibleState == CellVisible.Hide && Field[minePoint].Type == TypeOfCell.Mine)
-                {
-                    Field[minePoint].VisibleState = CellVisible.Open;
-                }
-                else if (Field[minePoint].VisibleState == CellVisible.Flag && Field[minePoint].Type != TypeOfCell.Mine)
-                {
-                    Field[minePoint].VisibleState = CellVisible.Open;
-                    Field[minePoint].Text = "";
-                    Field[minePoint].BackgroundImage = Properties.Resources.WrongMine;
+                foreach (Cell cell in cells)
+                {                    
+                    if (cell.VisibleState == CellVisible.Hide && cell.Type == TypeOfCell.Mine)
+                    {
+                        cell.VisibleState = CellVisible.Open;
+                    }
+                    else if (cell.VisibleState == CellVisible.Flag && cell.Type != TypeOfCell.Mine)
+                    {
+                        cell.VisibleState = CellVisible.Open;
+                        cell.Text = "";
+                        cell.BackgroundImage = Properties.Resources.WrongMine;
+                    }
                 }
             }
         }
@@ -102,13 +105,10 @@ namespace Minesweeper
         public void GameWin()
         {
             State = GameState.Win;
-            foreach (List<Cell> cells in Field.Cells)
+            foreach(CellPoint minePoint in Field.MinesPoints)
             {
-                foreach (Cell cell in cells)
-                {
-                    if (cell.VisibleState == CellVisible.Hide && cell.Type == TypeOfCell.Mine)
-                        cell.VisibleState = CellVisible.Flag;
-                }
+                if (Field[minePoint].VisibleState == CellVisible.Hide)
+                    Field[minePoint].VisibleState = CellVisible.Flag;
             }
         }
 

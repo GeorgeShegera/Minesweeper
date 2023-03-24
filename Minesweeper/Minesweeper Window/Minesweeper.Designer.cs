@@ -54,7 +54,7 @@ namespace Minesweeper
             this.FieldTimer = new System.Windows.Forms.Timer(this.components);
             this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.TimerPanel = new Minesweeper.CounterPanel();
-            this.MinesCounterPanel = new Minesweeper.CounterPanel();
+            this.FlagsCounterPanel = new Minesweeper.CounterPanel();
             this.menuStrip.SuspendLayout();
             this.OutterPanel.SuspendLayout();
             this.UpperPanel.SuspendLayout();
@@ -200,6 +200,11 @@ namespace Minesweeper
             this.FieldTimer.Interval = 1;
             this.FieldTimer.Tick += new System.EventHandler(this.Timer_Tick);
             // 
+            // GameTimer
+            // 
+            this.GameTimer.Interval = 1000;
+            this.GameTimer.Tick += new System.EventHandler(this.GameTimer_Tick);
+            // 
             // TimerPanel
             // 
             this.TimerPanel.Location = new System.Drawing.Point(0, 0);
@@ -209,13 +214,13 @@ namespace Minesweeper
             this.TimerPanel.TabIndex = 0;
             this.TimerPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.UpperInnerPanel_Paint);
             // 
-            // MinesCounterPanel
+            // FlagsCounterPanel
             // 
-            this.MinesCounterPanel.Location = new System.Drawing.Point(0, 0);
-            this.MinesCounterPanel.Name = "MinesCounterPanel";
-            this.MinesCounterPanel.Number = 0;
-            this.MinesCounterPanel.Size = new System.Drawing.Size(200, 100);
-            this.MinesCounterPanel.TabIndex = 0;
+            this.FlagsCounterPanel.Location = new System.Drawing.Point(0, 0);
+            this.FlagsCounterPanel.Name = "FlagsCounterPanel";
+            this.FlagsCounterPanel.Number = 0;
+            this.FlagsCounterPanel.Size = new System.Drawing.Size(200, 100);
+            this.FlagsCounterPanel.TabIndex = 0;
             // 
             // MineSweeperWnd
             // 
@@ -264,7 +269,7 @@ namespace Minesweeper
         private System.Windows.Forms.ToolStripMenuItem rulesToolStripMenuItem;
         private System.Windows.Forms.Timer GameTimer;
         private CounterPanel TimerPanel;
-        private CounterPanel MinesCounterPanel;
+        private CounterPanel FlagsCounterPanel;
 
         private Game game;
         private int CellsPanelBorWidth { get; } = 5;
