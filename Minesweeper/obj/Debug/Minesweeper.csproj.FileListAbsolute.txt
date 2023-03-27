@@ -11,3 +11,6 @@ E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.e
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.RecordsWnd.resources
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.NewRecordWnd.resources
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\bin\Debug\Newtonsoft.Json.dll
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\bin\Debug\Newtonsoft.Json.xml
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.csproj.CopyComplete

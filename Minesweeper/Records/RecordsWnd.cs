@@ -67,6 +67,7 @@ namespace Minesweeper
                 new GameRecord(GameLevel.Intermediate),
                 new GameRecord(GameLevel.Expert)
             };
+            SaveRecords();
             RefreshForm();
         }
     }

@@ -281,6 +281,7 @@ namespace Minesweeper
                         string name = newRecordWnd.PlayerName;
                         record = new GameRecord(game.Level, TimerPanel.Number, name);
                         SetRecord(record);
+                        SaveRecords();
                         RecordsWnd recordsWnd = new RecordsWnd();
                         recordsWnd.ShowDialog();
                     }
