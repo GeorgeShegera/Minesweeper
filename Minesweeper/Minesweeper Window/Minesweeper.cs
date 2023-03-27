@@ -18,11 +18,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using static Minesweeper.Program;
 
 namespace Minesweeper
 {
     public partial class MineSweeperWnd : Form
-    {        
+    {
         public MineSweeperWnd(GameLevel gameLevel = GameLevel.Beginner)
         {
             game = new Game(gameLevel);
@@ -38,7 +39,7 @@ namespace Minesweeper
                 case GameLevel.Expert:
                     TsiExpert.Checked = true;
                     break;
-            }            
+            }
             menuStrip.BackColor = Color.FromArgb(235, 233, 217);
             ReloadWindow();
             // Fonts
@@ -120,7 +121,7 @@ namespace Minesweeper
             FlagsCounterPanel = new CounterPanel(pictureBoxes, game.Mines);
             UpperPanel.Controls.Add(FlagsCounterPanel);
             FlagsCounterPanel.Size = new Size(CounterPanelWidth, CounterPanelHeight);
-            FlagsCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);            
+            FlagsCounterPanel.Location = new Point(UpperPanelIndent, UpperPanelIndent);
             FlagsCounterPanel.Controls.AddRange(pictureBoxes.ToArray());
             FlagsCounterPanel.Paint += new PaintEventHandler(UpperInnerPanel_Paint);
             // Smile button 
@@ -129,6 +130,18 @@ namespace Minesweeper
             BtnSmile.Location = new Point((GetCellsPanelWidth - CounterPanelHeight) / 2, UpperPanelIndent);
             BtnSmile.Image = Properties.Resources.SimpleSmile;
             Refresh();
+            //// MenuStrip
+            foreach (ToolStripMenuItem Tm_items in menuStrip.Items)
+            {
+                Tm_items.DropDownOpened += (sender, args) =>
+                {
+                    FieldTimer.Stop();
+                };
+                Tm_items.DropDownClosed += (sender, args) =>
+                {
+                    FieldTimer.Start();
+                };
+            }
 
             List<CounterPictureBox> GetCounters()
             {
@@ -148,6 +161,11 @@ namespace Minesweeper
                 }
                 return result;
             }
+        }
+
+        private void Tm_items_DropDownClosed(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ReloadField()
@@ -216,7 +234,12 @@ namespace Minesweeper
 
         private void BtnCell_MouseUp(object sender, MouseEventArgs e)
         {
-            if (!(FindControlAtCursor(this) is Cell cellButton) || game.EndOfGame()) return;
+            if (!(FindControlAtCursor(this) is Cell cellButton) || game.EndOfGame())
+            {
+                m_left = false;
+                m_right = false;
+                return;
+            }
             if (m_left && m_right)
             {
                 game.SmartOpen(cellButton);
@@ -242,27 +265,37 @@ namespace Minesweeper
             {
                 if (game.State == GameState.Lose)
                 {
-                    BtnSmile.Image = Properties.Resources.LoseSmile;
                     GameTimer.Stop();
+                    BtnSmile.Image = Properties.Resources.LoseSmile;
                 }
                 else if (game.State == GameState.Win)
                 {
-                    FlagsCounterPanel.Number = 0;
                     GameTimer.Stop();
+                    FlagsCounterPanel.Number = 0;
                     BtnSmile.Image = Properties.Resources.WinSmile;
+                    GameRecord record = GetRecord(game.Level);
+                    if (record.Time > TimerPanel.Number)
+                    {
+                        NewRecordWnd newRecordWnd = new NewRecordWnd(game.Level);
+                        newRecordWnd.ShowDialog();
+                        string name = newRecordWnd.PlayerName;
+                        record = new GameRecord(game.Level, TimerPanel.Number, name);
+                        SetRecord(record);
+                        RecordsWnd recordsWnd = new RecordsWnd();
+                        recordsWnd.ShowDialog();
+                    }
                 }
                 else BtnSmile.Image = Properties.Resources.SimpleSmile;
             }
         }
         private void BtnCell_MouseDown(object sender, MouseEventArgs e)
         {
+            if (!(sender is Cell cellButton) || game.EndOfGame()) return;
             if (e.Button == MouseButtons.Left)
                 m_left = true;
             if (e.Button == MouseButtons.Right)
                 m_right = true;
-
-            if (!(sender is Cell cellButton) || game.EndOfGame()) return;
-            else if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open &&
+            if (e.Button == MouseButtons.Right && cellButton.VisibleState != CellVisible.Open &&
                     (!m_right || !m_left))
             {
                 if (cellButton.VisibleState == CellVisible.Flag)
@@ -271,11 +304,11 @@ namespace Minesweeper
                     FlagsCounterPanel.Number++;
                 }
                 else if (FlagsCounterPanel.Number == 0)
-                {                    
+                {
                     MessageBox.Show("You don't have flags", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     m_left = false;
                     m_right = false;
-                }      
+                }
                 else if (cellButton.VisibleState == CellVisible.Hide)
                 {
                     cellButton.VisibleState = CellVisible.Flag;
@@ -330,7 +363,7 @@ namespace Minesweeper
         private bool m_left = false;
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (game.EndOfGame()) return;
+            if (game.EndOfGame() || ActiveForm != this) return;
             Rectangle r = CellsPanel.RectangleToScreen(CellsPanel.ClientRectangle);
             if (r.Contains(MousePosition))
             {
@@ -356,8 +389,6 @@ namespace Minesweeper
             }
             else if (prevCellButton != null)
             {
-                m_right = false;
-                m_left = false;
                 RemovePreviousStyle();
             }
 
@@ -438,7 +469,7 @@ namespace Minesweeper
             {
                 newLevel = GameLevel.Expert;
             }
-            Hide();
+            Hide();            
             MineSweeperWnd mineSweeper = new MineSweeperWnd(newLevel);
             mineSweeper.ShowDialog();
             Close();
@@ -449,7 +480,7 @@ namespace Minesweeper
             TimerPanel.Number++;
         }
 
-        private void bestTimesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void BestTimesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RecordsWnd recordsWnd = new RecordsWnd();
             recordsWnd.ShowDialog();

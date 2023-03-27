@@ -134,7 +134,7 @@ namespace Minesweeper
             this.bestTimesToolStripMenuItem.Name = "bestTimesToolStripMenuItem";
             this.bestTimesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.bestTimesToolStripMenuItem.Text = "Best Times...";
-            this.bestTimesToolStripMenuItem.Click += new System.EventHandler(this.bestTimesToolStripMenuItem_Click);
+            this.bestTimesToolStripMenuItem.Click += new System.EventHandler(this.BestTimesToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
@@ -201,7 +201,7 @@ namespace Minesweeper
             // 
             // BtnSmile
             // 
-            this.BtnSmile.Location = new System.Drawing.Point(78, 6);
+            this.BtnSmile.Location = new System.Drawing.Point(89, 6);
             this.BtnSmile.Name = "BtnSmile";
             this.BtnSmile.Size = new System.Drawing.Size(30, 29);
             this.BtnSmile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;

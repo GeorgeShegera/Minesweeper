@@ -16,6 +16,12 @@ namespace Minesweeper
         public RecordsWnd()
         {
             InitializeComponent();
+            RefreshForm();
+        }
+
+        private void RefreshForm()
+        {
+            TlbRecords.Controls.Clear();
             for (int i = 0; i < TlbRecords.RowCount; i++)
             {
                 for (int j = 0; j < TlbRecords.ColumnCount; j++)
@@ -51,6 +57,17 @@ namespace Minesweeper
         private void BtnOk_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void BtnReset_Click(object sender, EventArgs e)
+        {
+            Records = new List<GameRecord>
+            {
+                new GameRecord(GameLevel.Beginner),
+                new GameRecord(GameLevel.Intermediate),
+                new GameRecord(GameLevel.Expert)
+            };
+            RefreshForm();
         }
     }
 }

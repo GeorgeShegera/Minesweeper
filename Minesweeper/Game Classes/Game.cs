@@ -18,6 +18,7 @@ namespace Minesweeper
         public GameState State { get; set; } = GameState.InProgress;
         public Game(GameLevel level)
         {
+            Level = level;
             switch (level)
             {
                 case GameLevel.Beginner:

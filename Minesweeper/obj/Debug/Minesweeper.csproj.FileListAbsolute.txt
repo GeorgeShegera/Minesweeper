@@ -10,3 +10,4 @@ E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.c
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.exe
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.pdb
 E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.RecordsWnd.resources
+E:\Programming\WinForms Projects\Minesweeper\Minesweeper\obj\Debug\Minesweeper.NewRecordWnd.resources

@@ -45,12 +45,12 @@
             this.TlbRecords.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.TlbRecords.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.TlbRecords.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.TlbRecords.Size = new System.Drawing.Size(331, 99);
+            this.TlbRecords.Size = new System.Drawing.Size(351, 99);
             this.TlbRecords.TabIndex = 0;
             // 
             // BtnOk
             // 
-            this.BtnOk.Location = new System.Drawing.Point(251, 137);
+            this.BtnOk.Location = new System.Drawing.Point(281, 137);
             this.BtnOk.Name = "BtnOk";
             this.BtnOk.Size = new System.Drawing.Size(82, 25);
             this.BtnOk.TabIndex = 1;
@@ -68,12 +68,13 @@
             this.BtnReset.TabStop = false;
             this.BtnReset.Text = "Reset Scores";
             this.BtnReset.UseVisualStyleBackColor = true;
+            this.BtnReset.Click += new System.EventHandler(this.BtnReset_Click);
             // 
             // RecordsWnd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(355, 174);
+            this.ClientSize = new System.Drawing.Size(375, 174);
             this.Controls.Add(this.BtnReset);
             this.Controls.Add(this.BtnOk);
             this.Controls.Add(this.TlbRecords);

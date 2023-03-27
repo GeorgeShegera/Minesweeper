@@ -15,6 +15,32 @@ namespace Minesweeper
             new GameRecord(GameLevel.Expert)
         };
 
+        public static GameRecord GetRecord(GameLevel level)
+        {
+            switch (level)
+            {
+                case GameLevel.Beginner: return Records[0];
+                case GameLevel.Intermediate: return Records[1];
+                case GameLevel.Expert: return Records[2];
+                default: return null;
+            }
+        }
+        public static void SetRecord(GameRecord record)
+        {
+            switch (record.Level)
+            {
+                case GameLevel.Beginner:
+                    Records[0] = record;
+                    break;
+                case GameLevel.Intermediate:
+                    Records[1] = record;
+                    break;
+                case GameLevel.Expert:
+                    Records[2] = record;
+                    break;
+            }
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
